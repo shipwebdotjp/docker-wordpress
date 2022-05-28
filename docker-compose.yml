@@ -17,14 +17,15 @@ services:
     build: ./wordpress
     volumes:
       - ./html:/var/www/html
-    ports:
-      - "5000:80"
     environment:
       WORDPRESS_DB_HOST: db:3306
       WORDPRESS_DB_NAME: wordpress
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_DB_PASSWORD: wordpress
       WORDPRESS_DEBUG: 0
+      VIRTUAL_HOST: example.com
+      LETSENCRYPT_HOST: example.com
+      LETSENCRYPT_EMAIL: admin@example.com
     dns: 8.8.8.8
 
   # phpmyadmin:
@@ -59,5 +60,5 @@ services:
 
 networks:
   default:
-    external:
-      name: nginx_net
+    name: nginx_net
+    external: true
