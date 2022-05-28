@@ -1,0 +1,63 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:5.7
+    volumes:
+      - ./db:/var/lib/mysql
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+
+  web:
+    depends_on:
+      - db
+    build: ./wordpress
+    volumes:
+      - ./html:/var/www/html
+    ports:
+      - "5000:80"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DEBUG: 0
+    dns: 8.8.8.8
+
+  # phpmyadmin:
+  #   image: phpmyadmin:latest
+  #   #container_name: "wp_phpmyadmin"
+  #   ports:
+  #     - "8000:80"
+  #   environment:
+  #     PMA_HOSTS: db
+  #     PMA_USER: wordpress
+  #     PMA_PASSWORD: wordpress
+
+  mail:
+    image: juanluisbaptiste/postfix:latest
+    env_file:
+      - ./postfix/.env
+
+  cli:
+    image: wordpress:cli
+    volumes_from:
+      - web
+    depends_on:
+      - db
+      - web
+    command: "--info"
+    user: xfs
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+
+networks:
+  default:
+    external:
+      name: nginx_net
