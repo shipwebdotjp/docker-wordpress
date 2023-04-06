@@ -10,7 +10,12 @@ services:
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
       MYSQL_PASSWORD: wordpress
-
+    logging:
+      driver: json-file
+      options:
+        max-size: 1m
+        max-file: '3'
+  
   web:
     depends_on:
       - db
@@ -27,6 +32,13 @@ services:
       LETSENCRYPT_HOST: example.com
       LETSENCRYPT_EMAIL: admin@example.com
     dns: 8.8.8.8
+    logging:
+      driver: json-file
+      options:
+        max-size: 1m
+        max-file: '3'
+    # ports:
+    #   - 5000:80 #プロキシを使う場合はコメントアウト
 
   # phpmyadmin:
   #   image: phpmyadmin:latest
@@ -42,6 +54,11 @@ services:
     image: juanluisbaptiste/postfix:latest
     env_file:
       - ./postfix/.env
+    logging:
+      driver: json-file
+      options:
+        max-size: 1m
+        max-file: '3'
 
   cli:
     image: wordpress:cli
@@ -57,7 +74,12 @@ services:
       WORDPRESS_DB_NAME: wordpress
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_DB_PASSWORD: wordpress
-
+    logging:
+      driver: json-file
+      options:
+        max-size: 1m
+        max-file: '3'
+        
 networks:
   default:
     name: nginx_net
