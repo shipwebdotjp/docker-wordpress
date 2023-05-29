@@ -1,3 +1,5 @@
 .env
 msmtprc
 wp-install.sh
+html/
+db/
