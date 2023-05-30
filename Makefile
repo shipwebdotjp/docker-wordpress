@@ -4,7 +4,7 @@ up:
 build:
 	docker compose build
 install:
-	./wordpress/wp-install.sh
+	./wp-install.sh
 stop:
 	docker compose stop
 down:
@@ -43,4 +43,4 @@ db:
 sql:
 	docker compose exec db bash -c 'mysql -u $$MYSQL_USER -p$$MYSQL_PASSWORD $$MYSQL_DATABASE'
 createuser:
-	docker compose run --rm cli wp user create ${WP_USER} ${WP_ADMINMAIL} --role=administrator --user_pass="${WP_PASSWORD}"
+	docker compose run --rm cli wp user create ${WP_USER} ${WP_ADMINMAIL} --role=administrator --user_pass=${WP_PASSWORD}

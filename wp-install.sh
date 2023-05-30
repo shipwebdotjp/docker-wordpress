@@ -1,12 +1,22 @@
 #!/bin/bash
 
-# WordPress setup sample admin_user,admin_password meand ID and Password for loggin to wp admin.
+# .envファイルを読み込む
+source ./.env
+
+# WP_URL変数を作成
+if [ "${WP_PORT}" = "80" ]; then
+  WP_URL="${WP_HOST}"
+else
+  WP_URL="${WP_HOST}:${WP_PORT}"
+fi
+
+# WordPressセットアップ admin_user,admin_passwordは管理画面のログインID,PW
 docker compose run --rm cli bash -c "wp core install \
---url='http://example.com' \
+--url='http://${WP_URL}' \
 --title='WP Test' \
---admin_user='wpmaster' \
---admin_password='wordpresspassword' \
---admin_email='youremail@example.com' \
+--admin_user='${WP_USER}' \
+--admin_password='${WP_PASSWORD}' \
+--admin_email='${WP_ADMINMAIL}' \
 --allow-root \
 && wp language core install ja --activate --allow-root \
 && wp option update timezone_string 'Asia/Tokyo' --allow-root \
@@ -16,7 +26,7 @@ docker compose run --rm cli bash -c "wp core install \
 && wp plugin delete akismet --allow-root \
 && wp plugin install all-in-one-wp-migration --activate --allow-root"
 
-# plugin install (please comment out if you wnat to install)
+# プラグインのインストール (必要に応じてコメントアウトを外す)
 # wp plugin install wp-multibyte-patch --activate --allow-root
 # wp plugin install backwpup --activate --allow-root
 # wp plugin install siteguard --activate --allow-root
@@ -26,11 +36,11 @@ docker compose run --rm cli bash -c "wp core install \
 # wp plugin install broken-link-checker --activate --allow-root
 # wp plugin install addquicktag --activate --allow-root
 
-# delete theme
+# テーマの削除
 #wp theme delete twentysixteen --allow-root
 #wp theme delete twentyseventeen --allow-root
 #wp theme delete twentynineteen --allow-root
 # wp theme delete twentytwenty --allow-root
 
-# update permalink
+# パーマリンク更新
 #wp option update permalink_structure /%postname%/ --allow-root
